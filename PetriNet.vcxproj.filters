@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\services">
+      <UniqueIdentifier>{175e4955-d54a-448e-b5b0-22f8dc7d23bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\dao">
+      <UniqueIdentifier>{415d783c-8830-4738-bfd6-6e2061530582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\utils">
+      <UniqueIdentifier>{a5a10748-4b09-4b5b-9db0-b10748b9862f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\models">
+      <UniqueIdentifier>{3278085a-1b0b-4bda-82fa-9fa340db2edc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainForm.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeService.cpp">
+      <Filter>Исходные файлы\services</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeDao.cpp">
+      <Filter>Исходные файлы\dao</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeModel.cpp">
+      <Filter>Исходные файлы\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ManagerConnector.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="LineDto.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="LineDao.cpp">
+      <Filter>Исходные файлы\dao</Filter>
+    </ClCompile>
+    <ClCompile Include="LineModel.cpp">
+      <Filter>Исходные файлы\models</Filter>
+    </ClCompile>
+    <ClCompile Include="LineService.cpp">
+      <Filter>Исходные файлы\services</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainForm.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerConnector.h">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeDao.h">
+      <Filter>Исходные файлы\dao</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeService.h">
+      <Filter>Исходные файлы\services</Filter>
+    </ClInclude>
+    <ClInclude Include="LineDao.h">
+      <Filter>Исходные файлы\dao</Filter>
+    </ClInclude>
+    <ClInclude Include="LineService.h">
+      <Filter>Исходные файлы\services</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

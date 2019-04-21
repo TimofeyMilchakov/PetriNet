@@ -52,7 +52,7 @@ void PetriNet::jump(short int T) //используем переход
 	}
 }
 
-void PetriNet::algorithm(short int pBegin, short int pEnd) //путь из p1 в p2
+vector<short int> PetriNet::algorithm(short int pBegin, short int pEnd) //путь из p1 в p2
 {
 	vector<short int>  T,P;
 	short int p1 = pBegin, p2; 
@@ -61,7 +61,7 @@ void PetriNet::algorithm(short int pBegin, short int pEnd) //путь из p1 в p2
 	{
 		p2 = p;
 		b = transPossibility(p1, p2);
-		if (b && p2 = pEnd) 
+		/*if (b && p2 = pEnd) 
 		{
 			T.push_back(findT(p1, p2)); //по какому t
 			for (int i = 0; i < T.size(); i++)
@@ -69,7 +69,7 @@ void PetriNet::algorithm(short int pBegin, short int pEnd) //путь из p1 в p2
 				jump(T[i]);
 			} 
 			break ; //по ним делаем jump
-		}
+		}*/
 		if (b)
 		{
 			T.push_back(findT(p1, p2));
@@ -85,4 +85,5 @@ void PetriNet::algorithm(short int pBegin, short int pEnd) //путь из p1 в p2
 		}
 	}
 	//добавить вывод что, переход не возможен
+	return T;
 }

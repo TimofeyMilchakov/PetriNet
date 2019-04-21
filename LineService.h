@@ -14,6 +14,7 @@ private:
 public:
 	static LineService& getLineService();
 	list<LineDto> getAll();
+	list<LineModel> getLineById(int id);
+	LineModel getLineByIds(int id1, int id2);
 	LineDto createNewLine(LineModel line);
-
 };

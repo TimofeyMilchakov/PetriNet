@@ -146,6 +146,7 @@
     <ClCompile Include="NodeDao.cpp" />
     <ClCompile Include="NodeModel.cpp" />
     <ClCompile Include="NodeService.cpp" />
+    <ClCompile Include="PetriNet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LineDao.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="ManagerConnector.h" />
     <ClInclude Include="NodeDao.h" />
     <ClInclude Include="NodeService.h" />
+    <ClInclude Include="PetriNet.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">

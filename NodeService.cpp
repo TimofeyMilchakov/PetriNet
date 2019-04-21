@@ -10,11 +10,12 @@ NodeService& NodeService::getNodeService()
 	return theSingleInstance;
 }
 
-NodeModel NodeService::createNewNode(int x, int y) {
+NodeModel NodeService::createNewNode(int x, int y,int type) {
 	if (nodeDao.checkLocation(x, y)) {
 		NodeModel node;
 		node.x = (x);
 		node.y = (y);
+		node.type = type;
 		return nodeDao.createNew(node);
 	}
 	NodeModel empty;

@@ -19,11 +19,19 @@ list<LineDto> LineService::getAll() {
 	return res;
 }
 
+list<LineModel> LineService::getLineById(int id) {
+	return lineDao.findLinesById(id);
+}
+
 LineDto LineService::createNewLine(LineModel line) {
 	lineDao.createLine(line);
 	NodeModel f = nodeDao.findById(line.firstNode);
 	NodeModel s = nodeDao.findById(line.secondNode);
 	return LineDto(f.x, f.y, s.x, s.y);
+}
+
+LineModel LineService::getLineByIds(int id1, int id2) {
+	return lineDao.findLineByIds(id1, id2);
 }
 
 LineService::LineService() {}

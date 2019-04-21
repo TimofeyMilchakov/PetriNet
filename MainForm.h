@@ -45,13 +45,22 @@ namespace PetriNet {
 		/// Обязательная переменная конструктора.
 		/// </summary>
 		bool initialeze = false;
+
 		int nodeSelected = -1;
+		int typeNodeSelected = -1;
+		bool lineAdd = false;
+
+		int type = 0;
+
 		System::ComponentModel::Container^ components;
 		System::ComponentModel::Container^ nodes;
 	private: System::Windows::Forms::Button^ button1;
 			 LineService& lineService = LineService::getLineService();
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::Button^ button3;
+	private: System::Windows::Forms::Button^ button5;
+	private: System::Windows::Forms::Button^ button4;
+	private: System::Windows::Forms::Button^ button6;
 			 NodeService& nodeService = NodeService::getNodeService();
 #pragma region Windows Form Designer generated code
 			 /// <summary>
@@ -61,9 +70,12 @@ namespace PetriNet {
 			 void InitializeComponent(void)
 			 {
 				 this->splitContainer1 = (gcnew System::Windows::Forms::SplitContainer());
+				 this->button6 = (gcnew System::Windows::Forms::Button());
+				 this->button5 = (gcnew System::Windows::Forms::Button());
+				 this->button4 = (gcnew System::Windows::Forms::Button());
+				 this->button3 = (gcnew System::Windows::Forms::Button());
 				 this->button2 = (gcnew System::Windows::Forms::Button());
 				 this->button1 = (gcnew System::Windows::Forms::Button());
-				 this->button3 = (gcnew System::Windows::Forms::Button());
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
 				 this->splitContainer1->Panel2->SuspendLayout();
 				 this->splitContainer1->SuspendLayout();
@@ -81,12 +93,55 @@ namespace PetriNet {
 				 // 
 				 // splitContainer1.Panel2
 				 // 
+				 this->splitContainer1->Panel2->Controls->Add(this->button6);
+				 this->splitContainer1->Panel2->Controls->Add(this->button5);
+				 this->splitContainer1->Panel2->Controls->Add(this->button4);
 				 this->splitContainer1->Panel2->Controls->Add(this->button3);
 				 this->splitContainer1->Panel2->Controls->Add(this->button2);
 				 this->splitContainer1->Panel2->Controls->Add(this->button1);
 				 this->splitContainer1->Size = System::Drawing::Size(1173, 683);
 				 this->splitContainer1->SplitterDistance = 913;
 				 this->splitContainer1->TabIndex = 0;
+				 // 
+				 // button6
+				 // 
+				 this->button6->Location = System::Drawing::Point(3, 335);
+				 this->button6->Name = L"button6";
+				 this->button6->Size = System::Drawing::Size(241, 60);
+				 this->button6->TabIndex = 5;
+				 this->button6->Text = L"Добавить Связь";
+				 this->button6->UseVisualStyleBackColor = true;
+				 this->button6->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::addLine);
+				 // 
+				 // button5
+				 // 
+				 this->button5->Location = System::Drawing::Point(3, 267);
+				 this->button5->Name = L"button5";
+				 this->button5->Size = System::Drawing::Size(241, 62);
+				 this->button5->TabIndex = 4;
+				 this->button5->Text = L"Добавить Переход";
+				 this->button5->UseVisualStyleBackColor = true;
+				 this->button5->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::addTransfer);
+				 // 
+				 // button4
+				 // 
+				 this->button4->Location = System::Drawing::Point(3, 203);
+				 this->button4->Name = L"button4";
+				 this->button4->Size = System::Drawing::Size(241, 58);
+				 this->button4->TabIndex = 3;
+				 this->button4->Text = L"Добавить Позицию";
+				 this->button4->UseVisualStyleBackColor = true;
+				 this->button4->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::addPosition);
+				 // 
+				 // button3
+				 // 
+				 this->button3->Location = System::Drawing::Point(3, 138);
+				 this->button3->Name = L"button3";
+				 this->button3->Size = System::Drawing::Size(241, 59);
+				 this->button3->TabIndex = 2;
+				 this->button3->Text = L"Удалить вершину";
+				 this->button3->UseVisualStyleBackColor = true;
+				 this->button3->Click += gcnew System::EventHandler(this, &MainForm::deleteNode);
 				 // 
 				 // button2
 				 // 
@@ -107,16 +162,6 @@ namespace PetriNet {
 				 this->button1->Text = L"Загрузка из БД";
 				 this->button1->UseVisualStyleBackColor = true;
 				 this->button1->Click += gcnew System::EventHandler(this, &MainForm::init);
-				 // 
-				 // button3
-				 // 
-				 this->button3->Location = System::Drawing::Point(3, 138);
-				 this->button3->Name = L"button3";
-				 this->button3->Size = System::Drawing::Size(241, 59);
-				 this->button3->TabIndex = 2;
-				 this->button3->Text = L"Удалить вершину";
-				 this->button3->UseVisualStyleBackColor = true;
-				 this->button3->Click += gcnew System::EventHandler(this, &MainForm::deleteNode);
 				 // 
 				 // MainForm
 				 // 
@@ -155,18 +200,23 @@ namespace PetriNet {
 
 	private: System::Void addNewNode(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 	{
-		int x = e->X - 20;
-		int y = e->Y - 20;
-		NodeModel node = nodeService.createNewNode(x, y);
-		if (node.id != -1) {
-			System::Windows::Forms::Button^ b = createNodeFromModel(node);
-			this->splitContainer1->Panel1->Controls->Add(b);
+		if (type != 0) {
+			int x = e->X - 20;
+			int y = e->Y - 20;
+			NodeModel node = nodeService.createNewNode(x, y, type);
+			if (node.id != -1) {
+				System::Windows::Forms::Button^ b = createNodeFromModel(node);
+				this->splitContainer1->Panel1->Controls->Add(b);
+				type = 0;
+			}
 		}
 	}
 
 	private:System::Void drawLine(LineDto line, Color col) {
 		Graphics^ g = this->splitContainer1->Panel1->CreateGraphics();
-		Pen^ pen = gcnew Pen(col);
+		Pen^ pen = gcnew Pen(col,2);
+		pen->EndCap = System::Drawing::Drawing2D::LineCap::RoundAnchor;
+		pen->StartCap = System::Drawing::Drawing2D::LineCap::RoundAnchor;
 		g->DrawLine(pen, line.firstX, line.firstY, line.secondX, line.secondY);
 	}
 
@@ -174,12 +224,17 @@ namespace PetriNet {
 		System::Windows::Forms::Button^ b = (gcnew System::Windows::Forms::Button());
 		b->Location = System::Drawing::Point(node.x, node.y);
 		System::String^ name = System::Convert::ToString(node.id);
-		b->Name = name;
+		System::String^ type = System::Convert::ToString(node.type);
+		
+		b->Name = type;
 		b->Size = System::Drawing::Size(40, 40);
 		b->Click += gcnew System::EventHandler(this, &MainForm::clickNode);
 		b->TabIndex = 0;
 		b->Text = name;
 		b->UseVisualStyleBackColor = true;
+		if (node.type == 2) {
+			b->BackColor = Color::Yellow;
+		}
 		return b;
 	}
 
@@ -191,18 +246,23 @@ namespace PetriNet {
 	}
 
 	private: System::Void clickNode(System::Object^ sender, System::EventArgs^ e) {
-		int id = Convert::ToInt32(((Button^)sender)->Name);
+		int id = Convert::ToInt32(((Button^)sender)->Text);
+		int typeNode = Convert::ToInt32(((Button^)sender)->Name);
+		
 		if (nodeSelected != -1) {
-			if (nodeSelected == id) {
+			if (nodeSelected == id|| !lineAdd || typeNode== typeNodeSelected) {
 				return;
 			}
 			LineModel l = LineModel(nodeSelected, id);
 			LineDto line = lineService.createNewLine(l);
 			drawLine(line, Color::Black);
 			nodeSelected = -1;
+			typeNodeSelected = -1;
+			lineAdd = false;
 		}
 		else {
 			nodeSelected = id;
+			typeNodeSelected = typeNode;
 		}
 	}
 
@@ -218,7 +278,19 @@ namespace PetriNet {
 			nodeSelected = -1;
 		}
 	}
-	};
+	private: System::Void addPosition(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		type = 1;
+	}
+
+	private: System::Void addTransfer(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		type = 2;
+	}
+	private: System::Void addLine(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		lineAdd = !lineAdd;
+		int nodeSelected = -1;
+		int typeNodeSelected = -1;
+	}
+};
 }
 
 

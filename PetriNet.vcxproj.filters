@@ -54,6 +54,9 @@
     <ClCompile Include="LineService.cpp">
       <Filter>Исходные файлы\services</Filter>
     </ClCompile>
+    <ClCompile Include="PetriNet.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainForm.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="LineService.h">
       <Filter>Исходные файлы\services</Filter>
+    </ClInclude>
+    <ClInclude Include="PetriNet.h">
+      <Filter>Исходные файлы\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

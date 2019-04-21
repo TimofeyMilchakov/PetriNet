@@ -17,7 +17,7 @@ private:
 	NodeService& operator=(NodeService&);
 public:
 	static NodeService& getNodeService();
-	NodeModel createNewNode(int x, int y);
+	NodeModel createNewNode(int x, int y,int type);
 	list<NodeModel> getAll();
 	void deleteNode(int id);
 };

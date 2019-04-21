@@ -18,6 +18,7 @@ list<NodeModel> NodeDao::findAll() {
 		node.id = atoi(row[0]);
 		node.x = atoi(row[1]);
 		node.y = atoi(row[2]);
+		node.type = atoi(row[3]);
 		l.push_back(node);
 	}
 	return l;
@@ -26,7 +27,8 @@ list<NodeModel> NodeDao::findAll() {
 NodeModel NodeDao::createNew(NodeModel node) {
 	string x = to_string(node.x);
 	string y = to_string(node.y);
-	string query = "INSERT INTO nodes(x,y) VALUES(" + x + "," + y + ")";
+	string type = to_string(node.type);
+	string query = "INSERT INTO nodes(x,y,type) VALUES(" + x + "," + y + ","+type+")";
 	MYSQL_RES* result = db.query(query);
 	int id = findNodeId(node.x, node.y);
 	node.id = id;
@@ -42,6 +44,7 @@ NodeModel NodeDao::findById(int id) {
 	node.id = atoi(row[0]);
 	node.x = atoi(row[1]);
 	node.y = atoi(row[2]);
+	node.type = atoi(row[3]);
 	return node;
 }
 

@@ -3,7 +3,7 @@
 class LineModel
 {
 public:
-	LineModel():id(0),firstNode(0),secondNode(0) {};
+	LineModel():id(-1),firstNode(-1),secondNode(-1) {};
 	LineModel(int firstNode, int secondNode):id(0),firstNode(firstNode),secondNode(secondNode) {};
 	int id;
 	int firstNode;

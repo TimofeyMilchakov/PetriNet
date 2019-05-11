@@ -17,19 +17,19 @@ int main()
 	pNet->addD(2, 1, -1);
 	pNet->addD(3, 1, 1);
 	pNet->addM(0, 1); pNet->addM(2, 2); pNet->addM(3, 1);
-	for (int p = 0; p < pNet->sizeP; p++)
+	for (PetriNet<short>::Iterator itP = pNet->beginP(); itP != pNet->endP(); ++itP)
 	{
-		for (int t = 0; t < pNet->sizeT; t++)
+		for (PetriNet<short>::Iterator itT = pNet->beginT(); itT != pNet->endT(); ++itT)
 		{
-			cout << p << t << pNet->atD(p,t) << pNet->atM(p) <<'\n';
+			cout << itP.getPos() << itT.getPos() << pNet->atD(itP.getPos(), itT.getPos()) << pNet->atM(itP.getPos()) <<'\n';
 		}
 	}
 	pNet->algorithm(3, 0);
-	for (int p = 0; p < pNet->sizeP; p++)
+	for (PetriNet<short>::Iterator itP = pNet->beginP(); itP != pNet->endP(); ++itP)
 	{
-		for (int t = 0; t < pNet->sizeT; t++)
+		for (PetriNet<short>::Iterator itT = pNet->beginT(); itT != pNet->endT(); ++itT)
 		{
-			cout << p << t << pNet->atD(p, t) << pNet->atM(p) << '\n';
+			cout << itP.getPos() << itT.getPos() << pNet->atD(itP.getPos(), itT.getPos()) << pNet->atM(itP.getPos()) << '\n';
 		}
 	}
 	system("pause");

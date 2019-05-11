@@ -9,8 +9,29 @@ class PetriNet
 	
 	unordered_map<V, unordered_map<V, V>> net; //PxT матрица со значениями -1,0,1
 	unordered_map<V, V> M; //матрица маркеров
+	size_t sizeP, sizeT; 
+	
+
 public:
-	V sizeP, sizeT;
+	class Iterator: std::iterator<std::input_iterator_tag, V>
+	{
+	public:
+		Iterator(V pos, size_t count); //позиция, количество
+		Iterator(const Iterator& it);
+		Iterator& operator ++ ();
+		typename Iterator& operator *() const;
+		V getPos();
+		bool operator!=(Iterator const& other) const;
+
+	private:
+		size_t _count;
+		V _pos;
+	};
+	Iterator beginP() { return Iterator(0, sizeP); }
+	Iterator endP() { return Iterator(sizeP, sizeP); }
+	Iterator beginT() { return Iterator(0, sizeT); }
+	Iterator endT() { return Iterator(sizeT, sizeT); }
+
 	PetriNet();
 	virtual ~PetriNet();
 	//bool correctNet();
@@ -25,6 +46,54 @@ public:
 	V atD(V p, V t);
 	V atM(V p);
 };
+
+
+template<typename V>
+PetriNet<V>::Iterator::Iterator(V pos, size_t count)
+{
+	_pos = pos;
+	_count = count;
+}
+template<typename V>
+PetriNet<V>::Iterator::Iterator(const Iterator& it)
+{
+	_pos = it->getPos();
+}
+template<typename V>
+typename PetriNet<V>::Iterator& PetriNet<V>::Iterator::operator ++()
+{
+	if (_pos >= _count )
+	{
+		//THROW_MG_NULL_POINTER_EXCEPTION("Null pointer exception, increment > size!");
+		return *this;
+	}
+	++_pos;
+	return *this;
+}
+
+template<typename V>
+typename PetriNet<V>::Iterator& PetriNet<V>::Iterator::operator *() const
+{
+	if (_pos == _count)
+	{
+		//THROW_MG_NULL_POINTER_EXCEPTION("Null pointer exception, Try access to last NULL element!");
+		return NULL;
+	}
+	return *_pos;
+}
+template<typename V>
+bool PetriNet<V>::Iterator::operator!=(Iterator const& other) const
+{
+	return _pos != other._pos;
+}
+template<typename V>
+V PetriNet<V>::Iterator::getPos()
+{
+	return _pos;
+}
+
+
+
 template<typename V>
 class Allocator
 {
@@ -120,16 +189,18 @@ template<typename V>
 void PetriNet<V>::jump(V T) //используем переход
 {
 	bool marker = false;
-	for (int p = 0; p < M.size(); p++)
+	for (Iterator itP = beginP(); itP != endP(); ++itP)
 	{  //доступные позиции
+		V p=itP.getPos();
 		if (net[p][T] < 0 && M[p]>0)
 		{
 			M[p]--; marker = true;
 		}
 	}
 	if (marker)
-		for (int p = 0; p < M.size(); p++)
-		{
+		for (Iterator itP = beginP(); itP != endP(); ++itP)
+		{  
+			V p = itP.getPos();
 			if (net[p][T] > 0)
 			{
 				M[p]++;
@@ -143,8 +214,9 @@ void PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 	vector<V>  T, P;
 	V p1 = pBegin, p2;
 	bool b = false;
-	for (int p = 0; p < M.size(); p++)
+	for (Iterator itP = beginP(); itP != endP(); ++itP)
 	{
+		V p = itP.getPos();
 		p2 = p;
 		b = transPossibility(p1, p2);
 		if (p2 == pEnd && b)
@@ -179,8 +251,10 @@ void PetriNet<V>::addP(V p)
 	if (M.count(P) == 0)
 	{
 		M[p] = 0;
-		for (int i = 0; i < net[0].size(); i++) {
-			net[p][i] = 0;
+		for (Iterator itT = beginT(); itT != endT(); ++itT)
+		{
+			V t = itT.getPos();
+			net[p][t] = 0;
 			sizeP++;
 		}
 	}
@@ -190,8 +264,10 @@ void PetriNet<V>::addT(V t)
 {
 	const int T = t;
 	if (net[0].count(T) == 0)
-		for (int i = 0; i < M.size(); i++) {
-			net[i][t] = 0;
+		for (Iterator itP = beginP(); itP != endP(); ++itP)
+		{
+			V p = itP.getPos();
+			net[p][t] = 0;
 			sizeT++;
 		}
 }

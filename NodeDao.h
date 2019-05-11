@@ -1,6 +1,6 @@
 #pragma once
 #include <mysql.h>
-#include "NodeModel.cpp"
+#include "NodeModel.h"
 #include "ManagerConnector.h"
 #include <list>
 using namespace std;

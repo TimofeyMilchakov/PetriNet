@@ -23,6 +23,41 @@ list<LineModel> LineDao::findAll() {
 	}
 	return l;
 }
+LineModel LineDao::findLineByIds(int id1, int id2) {
+	string firstNode = to_string(id1);
+	string secondNode = to_string(id2);
+	string query = "SELECT * FROM l where (l.firstNode="+ firstNode +" AND l.secondNode="+ secondNode +") or (l.firstNode="+ secondNode +" AND l.secondNode="+ firstNode +")";
+	MYSQL_RES* result = db.query(query);
+	list<LineModel> l;
+	MYSQL_ROW row;
+	while (row = mysql_fetch_row(result))
+	{
+		LineModel line;
+		line.id = atoi(row[0]);
+		line.firstNode = atoi(row[1]);
+		line.secondNode = atoi(row[2]);
+		return line;
+	}
+	return LineModel();
+
+}
+
+list<LineModel> LineDao::findLinesById(int id) {
+	string ids = to_string(id);
+	string query = "SELECT * FROM l where (l.firstNode=" + ids +" OR l.secondNode=" + ids + ")";
+	MYSQL_RES* result = db.query(query);
+	list<LineModel> l;
+	MYSQL_ROW row;
+	while (row = mysql_fetch_row(result))
+	{
+		LineModel line;
+		line.id = atoi(row[0]);
+		line.firstNode = atoi(row[1]);
+		line.secondNode = atoi(row[2]);
+		l.push_back(line);
+	}
+	return l;
+}
 
 void LineDao::createLine(LineModel line)
 {

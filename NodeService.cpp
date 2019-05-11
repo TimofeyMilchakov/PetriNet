@@ -4,30 +4,61 @@
 NodeService::NodeService() {
 }
 
+bool NodeService::check(int x, int y, NodeModel* node)
+{
+	return abs(node->x-x)<25&& abs(node->y - y) < 25;
+}
+
 NodeService& NodeService::getNodeService()
 {
 	static NodeService theSingleInstance;
 	return theSingleInstance;
 }
 
-NodeModel NodeService::createNewNode(int x, int y) {
-	if (nodeDao.checkLocation(x, y)) {
-		NodeModel node;
-		node.x = (x);
-		node.y = (y);
-		return nodeDao.createNew(node);
+NodeModel* NodeService::createNewNode(int x, int y, int type, list<NodeModel*>* nodes)
+{
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if (check(x, y, *it)) {
+			return nullptr;
+		}
 	}
-	NodeModel empty;
-	empty.id = -1;
-	return empty;
+	return new NodeModel(++maxId,x,y,type);
 }
 
-list<NodeModel> NodeService::getAll() {
-	return nodeDao.findAll();
+void NodeService::deleteNode(int id, list<NodeModel*>* nodes, list<LineModel*>* lines)
+{
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if ((*it)->id==id) {
+			nodes->remove(*it);
+			lineService.deleteLinesByNodeId(id, lines);
+			return;
+		}
+	}
 }
 
-void NodeService::deleteNode(int id) {
-	nodeDao.removeNode(id);
-	lineDao.removeAllLinesByNodeId(id);
+void NodeService::refresh(list<NodeModel*>* nodes)
+{
+	int max = this->maxId;
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if (max < (*it)->id) {
+			max = (*it)->id;
+		}
+	}
+	this->maxId = max;
 }
+
+
+void NodeService::incrNode(int id,list<NodeModel*>* nodes)
+{
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if ((*it)->id == id && (*it)->type == 1) {
+			(*it)->size++;
+		}
+	}
+}
+
 

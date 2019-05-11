@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "NodeModel.cpp"
-#include "NodeDao.h"
-#include "LineDao.h"
+#include "NodeModel.h"
+#include "LineService.h"
+
 
 using namespace System;
 using namespace std;
@@ -10,14 +10,15 @@ using namespace std;
 class NodeService
 {
 private:
-	NodeDao& nodeDao= NodeDao::getNodeDao();
-	LineDao& lineDao= LineDao::getLineDao();
 	NodeService();
 	NodeService(const NodeService&);
-	NodeService& operator=(NodeService&);
+	bool check(int x, int y, NodeModel* node);
+	int maxId = 0;
+	LineService& lineService = LineService::getLineService();
 public:
 	static NodeService& getNodeService();
-	NodeModel createNewNode(int x, int y);
-	list<NodeModel> getAll();
-	void deleteNode(int id);
+	NodeModel* createNewNode(int x, int y,int type, list<NodeModel*>* nodes);
+	void deleteNode(int id, list<NodeModel*>* nodes, list<LineModel*>* lines);
+	void refresh(list<NodeModel*>* nodes);
+	void incrNode(int id, list<NodeModel*>* nodes);
 };

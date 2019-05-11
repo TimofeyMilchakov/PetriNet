@@ -137,27 +137,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LineDto.cpp" />
-    <ClCompile Include="LineDao.cpp" />
-    <ClCompile Include="LineModel.cpp" />
+    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="LineModel.h" />
     <ClCompile Include="LineService.cpp" />
     <ClCompile Include="MainForm.cpp" />
-    <ClCompile Include="ManagerConnector.cpp" />
-    <ClCompile Include="NodeDao.cpp" />
-    <ClCompile Include="NodeModel.cpp" />
+    <ClCompile Include="NodeModel.h" />
     <ClCompile Include="NodeService.cpp" />
     <ClCompile Include="PetriNet.cpp" />
+    <ClCompile Include="ViewController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LineDao.h" />
+    <ClInclude Include="FileService.h" />
     <ClInclude Include="LineService.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="ManagerConnector.h" />
-    <ClInclude Include="NodeDao.h" />
     <ClInclude Include="NodeService.h" />
     <ClInclude Include="PetriNet.h" />
+    <ClInclude Include="ViewController.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">

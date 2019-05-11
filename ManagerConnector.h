@@ -1,5 +1,5 @@
 #pragma once
-#include "NodeModel.cpp"
+#include "NodeModel.h"
 #include <string>
 #include <iostream>
 #include <cstring>

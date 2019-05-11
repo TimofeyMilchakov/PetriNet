@@ -1,6 +1,6 @@
 #pragma once
 #include "ManagerConnector.h"
-#include "LineModel.cpp"
+#include "LineModel.h"
 #include <list>
 using namespace std;
 

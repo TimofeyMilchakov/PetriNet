@@ -1,5 +1,5 @@
 #include "PetriNet.h"
-
+/*
 
 
 PetriNet::PetriNet()
@@ -139,4 +139,4 @@ short int PetriNet::atD(short int p, short int t)
 short int PetriNet::atM(short int p)
 {
 	return M[p];
-}
+}*/

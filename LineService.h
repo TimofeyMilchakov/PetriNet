@@ -1,6 +1,5 @@
 #pragma once
 #include "LineDao.h"
-#include "LineDto.cpp"
 #include "NodeDao.h"
 
 using namespace std;
@@ -8,13 +7,14 @@ using namespace std;
 class LineService
 {
 private:
-	LineDao& lineDao = LineDao::getLineDao();
-	NodeDao& nodeDao = NodeDao::getNodeDao();
 	LineService();
+	int maxId = 0;
 public:
 	static LineService& getLineService();
-	list<LineDto> getAll();
-	list<LineModel> getLineById(int id);
-	LineModel getLineByIds(int id1, int id2);
-	LineDto createNewLine(LineModel line);
+	list<LineModel*> getLineById(int id, list<LineModel*>* lines);
+	LineModel* getLineByIds(int id1, int id2, list<LineModel*>* lines);
+	LineModel* createNewLine(int from, int to, list<NodeModel*>* nodes, list<LineModel*>* lines);
+	void deleteLinesByNodeId(int id, list<LineModel*>* lines);
+	bool contains(LineModel* line, list<LineModel*>* lines);
+	void refresh(list<LineModel*>* lines);
 };

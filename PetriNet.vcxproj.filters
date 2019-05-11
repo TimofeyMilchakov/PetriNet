@@ -16,14 +16,14 @@
     <Filter Include="Исходные файлы\services">
       <UniqueIdentifier>{175e4955-d54a-448e-b5b0-22f8dc7d23bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\dao">
-      <UniqueIdentifier>{415d783c-8830-4738-bfd6-6e2061530582}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы\utils">
       <UniqueIdentifier>{a5a10748-4b09-4b5b-9db0-b10748b9862f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Исходные файлы\models">
       <UniqueIdentifier>{3278085a-1b0b-4bda-82fa-9fa340db2edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\controllers">
+      <UniqueIdentifier>{f63d4d4e-1888-46a9-9049-011ff5d3e46d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,52 +33,43 @@
     <ClCompile Include="NodeService.cpp">
       <Filter>Исходные файлы\services</Filter>
     </ClCompile>
-    <ClCompile Include="NodeDao.cpp">
-      <Filter>Исходные файлы\dao</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeModel.cpp">
-      <Filter>Исходные файлы\models</Filter>
-    </ClCompile>
-    <ClCompile Include="ManagerConnector.cpp">
-      <Filter>Исходные файлы\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="LineDto.cpp">
-      <Filter>Исходные файлы\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="LineDao.cpp">
-      <Filter>Исходные файлы\dao</Filter>
-    </ClCompile>
-    <ClCompile Include="LineModel.cpp">
-      <Filter>Исходные файлы\models</Filter>
-    </ClCompile>
     <ClCompile Include="LineService.cpp">
       <Filter>Исходные файлы\services</Filter>
     </ClCompile>
     <ClCompile Include="PetriNet.cpp">
       <Filter>Исходные файлы\utils</Filter>
     </ClCompile>
+    <ClCompile Include="FileService.cpp">
+      <Filter>Исходные файлы\services</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewController.cpp">
+      <Filter>Исходные файлы\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="LineModel.h">
+      <Filter>Исходные файлы\models</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeModel.h">
+      <Filter>Исходные файлы\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainForm.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ManagerConnector.h">
-      <Filter>Исходные файлы\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeDao.h">
-      <Filter>Исходные файлы\dao</Filter>
-    </ClInclude>
     <ClInclude Include="NodeService.h">
       <Filter>Исходные файлы\services</Filter>
-    </ClInclude>
-    <ClInclude Include="LineDao.h">
-      <Filter>Исходные файлы\dao</Filter>
     </ClInclude>
     <ClInclude Include="LineService.h">
       <Filter>Исходные файлы\services</Filter>
     </ClInclude>
     <ClInclude Include="PetriNet.h">
       <Filter>Исходные файлы\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FileService.h">
+      <Filter>Исходные файлы\services</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewController.h">
+      <Filter>Исходные файлы\controllers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

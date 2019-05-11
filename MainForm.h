@@ -1,7 +1,6 @@
 #pragma once
 #include <list>
-#include "NodeService.h"
-#include "LineService.h"
+#include "ViewController.h"
 
 namespace PetriNet {
 
@@ -46,22 +45,21 @@ namespace PetriNet {
 		/// </summary>
 		bool initialeze = false;
 
-		int nodeSelected = -1;
-		int typeNodeSelected = -1;
-		bool lineAdd = false;
-
-		int type = 0;
 
 		System::ComponentModel::Container^ components;
 		System::ComponentModel::Container^ nodes;
 	private: System::Windows::Forms::Button^ button1;
-			 LineService& lineService = LineService::getLineService();
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::Button^ button3;
 	private: System::Windows::Forms::Button^ button5;
 	private: System::Windows::Forms::Button^ button4;
 	private: System::Windows::Forms::Button^ button6;
-			 NodeService& nodeService = NodeService::getNodeService();
+	private: System::Windows::Forms::Button^ button7;
+	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
+	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
+	private: System::Windows::Forms::Button^ button8;
+
+	private: ViewController^ viewController;
 #pragma region Windows Form Designer generated code
 			 /// <summary>
 			 /// Требуемый метод для поддержки конструктора — не изменяйте 
@@ -70,12 +68,16 @@ namespace PetriNet {
 			 void InitializeComponent(void)
 			 {
 				 this->splitContainer1 = (gcnew System::Windows::Forms::SplitContainer());
+				 this->button7 = (gcnew System::Windows::Forms::Button());
 				 this->button6 = (gcnew System::Windows::Forms::Button());
 				 this->button5 = (gcnew System::Windows::Forms::Button());
 				 this->button4 = (gcnew System::Windows::Forms::Button());
 				 this->button3 = (gcnew System::Windows::Forms::Button());
 				 this->button2 = (gcnew System::Windows::Forms::Button());
 				 this->button1 = (gcnew System::Windows::Forms::Button());
+				 this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+				 this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
+				 this->button8 = (gcnew System::Windows::Forms::Button());
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
 				 this->splitContainer1->Panel2->SuspendLayout();
 				 this->splitContainer1->SuspendLayout();
@@ -93,6 +95,8 @@ namespace PetriNet {
 				 // 
 				 // splitContainer1.Panel2
 				 // 
+				 this->splitContainer1->Panel2->Controls->Add(this->button8);
+				 this->splitContainer1->Panel2->Controls->Add(this->button7);
 				 this->splitContainer1->Panel2->Controls->Add(this->button6);
 				 this->splitContainer1->Panel2->Controls->Add(this->button5);
 				 this->splitContainer1->Panel2->Controls->Add(this->button4);
@@ -103,9 +107,19 @@ namespace PetriNet {
 				 this->splitContainer1->SplitterDistance = 913;
 				 this->splitContainer1->TabIndex = 0;
 				 // 
+				 // button7
+				 // 
+				 this->button7->Location = System::Drawing::Point(3, 72);
+				 this->button7->Name = L"button7";
+				 this->button7->Size = System::Drawing::Size(241, 58);
+				 this->button7->TabIndex = 6;
+				 this->button7->Text = L"Сохранение в файл";
+				 this->button7->UseVisualStyleBackColor = true;
+				 this->button7->Click += gcnew System::EventHandler(this, &MainForm::saveToFile);
+				 // 
 				 // button6
 				 // 
-				 this->button6->Location = System::Drawing::Point(3, 335);
+				 this->button6->Location = System::Drawing::Point(3, 399);
 				 this->button6->Name = L"button6";
 				 this->button6->Size = System::Drawing::Size(241, 60);
 				 this->button6->TabIndex = 5;
@@ -115,7 +129,7 @@ namespace PetriNet {
 				 // 
 				 // button5
 				 // 
-				 this->button5->Location = System::Drawing::Point(3, 267);
+				 this->button5->Location = System::Drawing::Point(3, 331);
 				 this->button5->Name = L"button5";
 				 this->button5->Size = System::Drawing::Size(241, 62);
 				 this->button5->TabIndex = 4;
@@ -125,7 +139,7 @@ namespace PetriNet {
 				 // 
 				 // button4
 				 // 
-				 this->button4->Location = System::Drawing::Point(3, 203);
+				 this->button4->Location = System::Drawing::Point(3, 267);
 				 this->button4->Name = L"button4";
 				 this->button4->Size = System::Drawing::Size(241, 58);
 				 this->button4->TabIndex = 3;
@@ -135,7 +149,7 @@ namespace PetriNet {
 				 // 
 				 // button3
 				 // 
-				 this->button3->Location = System::Drawing::Point(3, 138);
+				 this->button3->Location = System::Drawing::Point(3, 202);
 				 this->button3->Name = L"button3";
 				 this->button3->Size = System::Drawing::Size(241, 59);
 				 this->button3->TabIndex = 2;
@@ -145,7 +159,7 @@ namespace PetriNet {
 				 // 
 				 // button2
 				 // 
-				 this->button2->Location = System::Drawing::Point(3, 72);
+				 this->button2->Location = System::Drawing::Point(3, 136);
 				 this->button2->Name = L"button2";
 				 this->button2->Size = System::Drawing::Size(241, 60);
 				 this->button2->TabIndex = 1;
@@ -159,9 +173,23 @@ namespace PetriNet {
 				 this->button1->Name = L"button1";
 				 this->button1->Size = System::Drawing::Size(241, 54);
 				 this->button1->TabIndex = 0;
-				 this->button1->Text = L"Загрузка из БД";
+				 this->button1->Text = L"Загрузка из Файла";
 				 this->button1->UseVisualStyleBackColor = true;
-				 this->button1->Click += gcnew System::EventHandler(this, &MainForm::init);
+				 this->button1->Click += gcnew System::EventHandler(this, &MainForm::loadFromFile);
+				 // 
+				 // openFileDialog1
+				 // 
+				 this->openFileDialog1->FileName = L"openFileDialog1";
+				 // 
+				 // button8
+				 // 
+				 this->button8->Location = System::Drawing::Point(3, 465);
+				 this->button8->Name = L"button8";
+				 this->button8->Size = System::Drawing::Size(241, 55);
+				 this->button8->TabIndex = 7;
+				 this->button8->Text = L"Добавить метку";
+				 this->button8->UseVisualStyleBackColor = true;
+				 this->button8->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::addM);
 				 // 
 				 // MainForm
 				 // 
@@ -175,121 +203,82 @@ namespace PetriNet {
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->EndInit();
 				 this->splitContainer1->ResumeLayout(false);
 				 this->ResumeLayout(false);
-
+				 this->viewController = gcnew ViewController(this->splitContainer1->Panel1);
 			 }
 #pragma endregion
-
-	private: void initializeNodes(void) {
-
-		list<NodeModel> nodes = nodeService.getAll();
-		list <NodeModel> ::iterator it;
-		for (it = nodes.begin(); it != nodes.end(); it++) {
-			System::Windows::Forms::Button^ b = createNodeFromModel(*it);
-			this->splitContainer1->Panel1->Controls->Add(b);
-		}
-
-	}
-
-	private: void initializeLines(void) {
-		list<LineDto> lines = lineService.getAll();
-		list <LineDto> ::iterator it;
-		for (it = lines.begin(); it != lines.end(); it++) {
-			drawLine(*it, Color::Black);
-		}
+			 //this->viewController = gcnew ViewController(this->splitContainer1->Panel1);
+	public: System::Windows::Forms::SplitterPanel^ getPanel() {
+		return this->splitContainer1->Panel1;
 	}
 
 	private: System::Void addNewNode(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 	{
-		if (type != 0) {
-			int x = e->X - 20;
-			int y = e->Y - 20;
-			NodeModel node = nodeService.createNewNode(x, y, type);
-			if (node.id != -1) {
-				System::Windows::Forms::Button^ b = createNodeFromModel(node);
-				this->splitContainer1->Panel1->Controls->Add(b);
-				type = 0;
-			}
-		}
-	}
-
-	private:System::Void drawLine(LineDto line, Color col) {
-		Graphics^ g = this->splitContainer1->Panel1->CreateGraphics();
-		Pen^ pen = gcnew Pen(col,2);
-		pen->EndCap = System::Drawing::Drawing2D::LineCap::RoundAnchor;
-		pen->StartCap = System::Drawing::Drawing2D::LineCap::RoundAnchor;
-		g->DrawLine(pen, line.firstX, line.firstY, line.secondX, line.secondY);
-	}
-
-	private: System::Windows::Forms::Button^ createNodeFromModel(NodeModel node) {
-		System::Windows::Forms::Button^ b = (gcnew System::Windows::Forms::Button());
-		b->Location = System::Drawing::Point(node.x, node.y);
-		System::String^ name = System::Convert::ToString(node.id);
-		System::String^ type = System::Convert::ToString(node.type);
-		
-		b->Name = type;
-		b->Size = System::Drawing::Size(40, 40);
-		b->Click += gcnew System::EventHandler(this, &MainForm::clickNode);
-		b->TabIndex = 0;
-		b->Text = name;
-		b->UseVisualStyleBackColor = true;
-		if (node.type == 2) {
-			b->BackColor = Color::Yellow;
-		}
-		return b;
+		int x = e->X - 20;
+		int y = e->Y - 20;
+		viewController->addNewNode(x, y);
 	}
 
 
-	private: System::Void init(System::Object^ sender, System::EventArgs^ e) {
-		clear(nullptr, nullptr);
-		initializeLines();
-		initializeNodes();
-	}
 
 	private: System::Void clickNode(System::Object^ sender, System::EventArgs^ e) {
 		int id = Convert::ToInt32(((Button^)sender)->Text);
-		int typeNode = Convert::ToInt32(((Button^)sender)->Name);
-		
-		if (nodeSelected != -1) {
-			if (nodeSelected == id|| !lineAdd || typeNode== typeNodeSelected) {
-				return;
-			}
-			LineModel l = LineModel(nodeSelected, id);
-			LineDto line = lineService.createNewLine(l);
-			drawLine(line, Color::Black);
-			nodeSelected = -1;
-			typeNodeSelected = -1;
-			lineAdd = false;
-		}
-		else {
-			nodeSelected = id;
-			typeNodeSelected = typeNode;
-		}
+		viewController->nodeClick(id);
+
 	}
 
 	private: System::Void clear(System::Object^ sender, System::EventArgs^ e) {
-		this->splitContainer1->Panel1->Controls->Clear();
-		Graphics^ g = this->splitContainer1->Panel1->CreateGraphics();
-		g->Clear(Color::White);
+		viewController->clean(true);
 	}
 	private: System::Void deleteNode(System::Object^ sender, System::EventArgs^ e) {
-		if (nodeSelected != -1) {
-			nodeService.deleteNode(nodeSelected);
-			init(nullptr, nullptr);
-			nodeSelected = -1;
-		}
+		viewController->addViewMode(ViewMode::DELETE_NODE);
 	}
 	private: System::Void addPosition(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-		type = 1;
+		viewController->addViewMode(ViewMode::ADD_POSITION);
 	}
 
 	private: System::Void addTransfer(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-		type = 2;
+		viewController->addViewMode(ViewMode::ADD_TRANSFER);
+
 	}
 	private: System::Void addLine(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-		lineAdd = !lineAdd;
-		int nodeSelected = -1;
-		int typeNodeSelected = -1;
+		viewController->addViewMode(ViewMode::ADD_LINE);
 	}
+
+
+private: System::Void loadFromFile(System::Object^ sender, System::EventArgs^ e) {
+	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+		return;
+	// получаем выбранный файл
+	String^ filename = (openFileDialog1)->FileName;	
+	
+	string result = viewController->loadFile(stringConverter(filename));
+	
+	System::Windows::Forms::MessageBox::Show(gcnew System::String(result.c_str()));
+
+}
+
+	private: string stringConverter(System::String^ sS) {
+		std::string myString = "";
+		for (int i = 0; i < sS->Length; i++) {
+			myString += (char)sS[i];
+		}
+		return myString;
+	}
+private: System::Void saveToFile(System::Object^ sender, System::EventArgs^ e) {
+	if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+		return;
+	// получаем выбранный файл
+	String^ filename = (saveFileDialog1)->FileName;
+	// сохраняем текст в файл
+	string result = viewController->saveFile(stringConverter(filename));
+
+	System::Windows::Forms::MessageBox::Show(gcnew System::String(result.c_str()));
+
+}
+
+private: System::Void addM(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+	this->viewController->addViewMode(ViewMode::ADD_M);
+}
 };
 }
 

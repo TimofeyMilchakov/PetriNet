@@ -6,32 +6,95 @@ LineService& LineService::getLineService()
 	return theSingleInstance;
 }
 
-list<LineDto> LineService::getAll() {
-	list<LineDto> res;
-	list<LineModel> mod = lineDao.findAll();
-	list<LineModel>::iterator it;
-	for (it = mod.begin(); it != mod.end(); it++) {
-		NodeModel f = nodeDao.findById((*it).firstNode);
-		NodeModel s = nodeDao.findById((*it).secondNode);
-		LineDto l = LineDto(f.x, f.y, s.x, s.y);
-		res.push_back(l);
+list<LineModel*> LineService::getLineById(int id, list<LineModel*>* lines)
+{
+	list<LineModel*> newList;
+	list<LineModel*>::iterator it;
+	for (it = lines->begin(); it != lines->end(); it++) {
+		if ((*it)->firstNode == id || (*it)->secondNode == id) {
+			newList.push_back(*it);
+		}
 	}
-	return res;
+	return newList;
 }
 
-list<LineModel> LineService::getLineById(int id) {
-	return lineDao.findLinesById(id);
+LineModel* LineService::getLineByIds(int id1, int id2, list<LineModel*>* lines)
+{
+	list<LineModel*>::iterator it;
+	for (it = lines->begin(); it != lines->end(); it++) {
+		if (((*it)->firstNode == id1 && (*it)->secondNode == id2)||((*it)->firstNode == id2 && (*it)->secondNode == id1)) {
+			return *it;
+		}
+	}
+	return nullptr;
 }
 
-LineDto LineService::createNewLine(LineModel line) {
-	lineDao.createLine(line);
-	NodeModel f = nodeDao.findById(line.firstNode);
-	NodeModel s = nodeDao.findById(line.secondNode);
-	return LineDto(f.x, f.y, s.x, s.y);
+LineModel* LineService::createNewLine(int from, int to, list<NodeModel*>* nodes, list<LineModel*>* lines)
+{
+	NodeModel* f = nullptr;
+	NodeModel* s = nullptr;
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if ((*it)->id == from) {
+			f = (*it);
+		}
+		if ((*it)->id == to) {
+			s = (*it);
+		}
+	}
+	if (!f || !s || f->type==s->type) {
+		return nullptr;
+	}
+	list<LineModel*>::iterator itl;
+	for (itl = lines->begin(); itl != lines->end(); itl++) {
+		if ((*itl)->firstNode == from && (*itl)->secondNode == to)
+		{
+			return nullptr;
+		}
+		if ((*itl)->firstNode == to&& (*itl)->secondNode == from)
+		{
+			return nullptr;
+		}
+	}
+	return new LineModel(++maxId, from, to);
 }
 
-LineModel LineService::getLineByIds(int id1, int id2) {
-	return lineDao.findLineByIds(id1, id2);
+void LineService::deleteLinesByNodeId(int id, list<LineModel*>* lines)
+{
+	list<LineModel*>::iterator it;
+	for (it = lines->begin(); it != lines->end(); it++) {
+		if ((*it)->firstNode==id|| (*it)->secondNode== id)
+		{
+			lines->remove(*it);
+			deleteLinesByNodeId(id, lines);
+			break;
+		}
+	}
 }
+
+bool LineService::contains(LineModel* line, list<LineModel*>* lines)
+{
+	list<LineModel*>::iterator it;
+	for (it = lines->begin(); it != lines->end(); it++) {
+		if ((*it)->equals(line)) 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void LineService::refresh(list<LineModel*>* lines)
+{
+	int max = this->maxId;
+	list<LineModel*>::iterator it;
+	for (it = lines->begin(); it != lines->end(); it++) {
+		if (max < (*it)->id) {
+			max = (*it)->id;
+		}
+	}
+	this->maxId = max;
+}
+
 
 LineService::LineService() {}

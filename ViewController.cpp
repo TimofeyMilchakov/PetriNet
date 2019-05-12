@@ -124,7 +124,12 @@ void ViewController::nodeClick(int id)
 			}
 			break;
 		case ADD_M:
-			nodeService.incrNode(id, nodes);
+			nodeService.changeSizeNode(id, nodes,true);
+			clean(false);
+			draw(nullptr);
+			break;
+		case DELETE_M:
+			nodeService.changeSizeNode(id, nodes, false);
 			clean(false);
 			draw(nullptr);
 			break;
@@ -186,11 +191,20 @@ string ViewController::loadFile(string path)
 {
 	if (fileService.loadFile(path, nodes, lines)) 
 	{
-		clean(false);
-		draw(nullptr);
-		lineService.refresh(lines);
-		nodeService.refresh(nodes);
-		return string("Данные успешно загруженны");
+		if (nodeService.validateData(nodes, lines)) {
+			clean(false);
+			draw(nullptr);
+			lineService.refresh(lines);
+			nodeService.refresh(nodes);
+			return string("Данные успешно загруженны");
+		}
+		else {
+			clean(true);
+			draw(nullptr);
+			lineService.refresh(lines);
+			nodeService.refresh(nodes);
+			return string("Ошибка в загруженных данных");
+		}
 	}
 	else 
 	{

@@ -7,8 +7,8 @@ template<typename V>
 class PetriNet
 {
 	
-	unordered_map<V, unordered_map<V, V>> net; //PxT матрица со значениями -1,0,1
-	unordered_map<V, V> M; //матрица маркеров
+	unordered_map<V, unordered_map<V, short>> net; //PxT матрица со значениями -1,0,1
+	unordered_map<V, short> M; //матрица маркеров
 	size_t sizeP, sizeT; 
 	
 
@@ -38,7 +38,7 @@ public:
 	V findT(V p1, V p2);
 	bool transPossibility(V p1, V p2);
 	void jump(V t);
-	void algorithm(V pBegin, V pEnd);
+	vector<V> algorithm(V pBegin, V pEnd);
 	void addD(V p, V t, V d);
 	void addM(V p, V val);
 	void addP(V p);
@@ -209,14 +209,14 @@ void PetriNet<V>::jump(V T) //используем переход
 }
 
 template<typename V>
-void PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
+vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 {
 	vector<V>  T, P;
-	V p1 = pBegin, p2;
+	V p1 = pBegin, p2, p;
 	bool b = false;
 	for (Iterator itP = beginP(); itP != endP(); ++itP)
 	{
-		V p = itP.getPos();
+		p = itP.getPos();
 		p2 = p;
 		b = transPossibility(p1, p2);
 		if (p2 == pEnd && b)
@@ -226,7 +226,7 @@ void PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 			{
 				jump(T[i]);
 			}
-			break; //по ним делаем jump
+			return T; //по ним делаем jump
 		}
 		if (b)
 		{
@@ -235,14 +235,14 @@ void PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 			p1 = p2;
 			p = -1;
 		}
-		else
+		else if(pBegin!=pEnd)
 		{
 			p = p1;
 			T.pop_back(); P.pop_back();
 			p1 = P[P.size() - 1];
 		}
 	}
-	//добавить вывод что, переход не возможен
+	return {};  //пустой вектор
 }
 template<typename V>
 void PetriNet<V>::addP(V p)

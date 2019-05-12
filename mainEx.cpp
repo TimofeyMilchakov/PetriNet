@@ -24,7 +24,7 @@ int main()
 			cout << itP.getPos() << itT.getPos() << pNet->atD(itP.getPos(), itT.getPos()) << pNet->atM(itP.getPos()) <<'\n';
 		}
 	}
-	pNet->algorithm(3, 0);
+	vector<short> T= pNet->algorithm(1, 1);
 	for (PetriNet<short>::Iterator itP = pNet->beginP(); itP != pNet->endP(); ++itP)
 	{
 		for (PetriNet<short>::Iterator itT = pNet->beginT(); itT != pNet->endT(); ++itT)

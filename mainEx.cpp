@@ -24,7 +24,15 @@ int main()
 			cout << itP.getPos() << itT.getPos() << pNet->atD(itP.getPos(), itT.getPos()) << pNet->atM(itP.getPos()) <<'\n';
 		}
 	}
-	vector<short> T= pNet->algorithm(1, 1);
+	pNet->deleteP(2); pNet->deleteT(1);
+	for (PetriNet<short>::Iterator itP = pNet->beginP(); itP != pNet->endP(); ++itP)
+	{
+		for (PetriNet<short>::Iterator itT = pNet->beginT(); itT != pNet->endT(); ++itT)
+		{
+			cout << itP.getPos() << itT.getPos() << pNet->atD(itP.getPos(), itT.getPos()) << pNet->atM(itP.getPos()) << '\n';
+		}
+	}
+	vector<short> T= pNet->algorithm(2, 0);
 	for (PetriNet<short>::Iterator itP = pNet->beginP(); itP != pNet->endP(); ++itP)
 	{
 		for (PetriNet<short>::Iterator itT = pNet->beginT(); itT != pNet->endT(); ++itT)

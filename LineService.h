@@ -1,6 +1,7 @@
 #pragma once
-#include "LineDao.h"
-#include "NodeDao.h"
+#include "NodeModel.h"
+#include "LineModel.h"
+#include <list>
 
 using namespace std;
 

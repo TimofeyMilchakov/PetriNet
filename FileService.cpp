@@ -35,6 +35,7 @@ bool FileService::loadFile(string fileName, list<NodeModel*>* nodes, list<LineMo
 {
 	ifstream myfile;
 	myfile.open(fileName, ios::binary);
+	int test = 0;
 	nodes->clear();
 	lines->clear();
 	if (myfile.is_open())
@@ -56,6 +57,11 @@ bool FileService::loadFile(string fileName, list<NodeModel*>* nodes, list<LineMo
 				myfile >> line;
 				lines->push_back(line);
 				continue;
+			}
+			test++;
+			if (test > 5) {
+				myfile.close();
+				return false;
 			}
 		}
 		myfile.close();

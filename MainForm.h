@@ -59,6 +59,7 @@ namespace PetriNet {
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 	private: System::Windows::Forms::Button^ button8;
 	private: System::Windows::Forms::Button^ button9;
+	private: System::Windows::Forms::Button^ button10;
 
 	private: ViewController^ viewController;
 #pragma region Windows Form Designer generated code
@@ -69,6 +70,7 @@ namespace PetriNet {
 			 void InitializeComponent(void)
 			 {
 				 this->splitContainer1 = (gcnew System::Windows::Forms::SplitContainer());
+				 this->button9 = (gcnew System::Windows::Forms::Button());
 				 this->button8 = (gcnew System::Windows::Forms::Button());
 				 this->button7 = (gcnew System::Windows::Forms::Button());
 				 this->button6 = (gcnew System::Windows::Forms::Button());
@@ -79,7 +81,7 @@ namespace PetriNet {
 				 this->button1 = (gcnew System::Windows::Forms::Button());
 				 this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 				 this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
-				 this->button9 = (gcnew System::Windows::Forms::Button());
+				 this->button10 = (gcnew System::Windows::Forms::Button());
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
 				 this->splitContainer1->Panel2->SuspendLayout();
 				 this->splitContainer1->SuspendLayout();
@@ -97,6 +99,7 @@ namespace PetriNet {
 				 // 
 				 // splitContainer1.Panel2
 				 // 
+				 this->splitContainer1->Panel2->Controls->Add(this->button10);
 				 this->splitContainer1->Panel2->Controls->Add(this->button9);
 				 this->splitContainer1->Panel2->Controls->Add(this->button8);
 				 this->splitContainer1->Panel2->Controls->Add(this->button7);
@@ -109,6 +112,16 @@ namespace PetriNet {
 				 this->splitContainer1->Size = System::Drawing::Size(1173, 683);
 				 this->splitContainer1->SplitterDistance = 913;
 				 this->splitContainer1->TabIndex = 0;
+				 // 
+				 // button9
+				 // 
+				 this->button9->Location = System::Drawing::Point(3, 526);
+				 this->button9->Name = L"button9";
+				 this->button9->Size = System::Drawing::Size(241, 51);
+				 this->button9->TabIndex = 8;
+				 this->button9->Text = L"Удалить метку";
+				 this->button9->UseVisualStyleBackColor = true;
+				 this->button9->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::deleteM);
 				 // 
 				 // button8
 				 // 
@@ -194,15 +207,15 @@ namespace PetriNet {
 				 // 
 				 this->openFileDialog1->FileName = L"openFileDialog1";
 				 // 
-				 // button9
+				 // button10
 				 // 
-				 this->button9->Location = System::Drawing::Point(3, 526);
-				 this->button9->Name = L"button9";
-				 this->button9->Size = System::Drawing::Size(241, 51);
-				 this->button9->TabIndex = 8;
-				 this->button9->Text = L"Удалить метку";
-				 this->button9->UseVisualStyleBackColor = true;
-				 this->button9->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::deleteM);
+				 this->button10->Location = System::Drawing::Point(3, 583);
+				 this->button10->Name = L"button10";
+				 this->button10->Size = System::Drawing::Size(241, 46);
+				 this->button10->TabIndex = 9;
+				 this->button10->Text = L"Алгоритм";
+				 this->button10->UseVisualStyleBackColor = true;
+				 this->button10->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::alg);
 				 // 
 				 // MainForm
 				 // 
@@ -294,6 +307,9 @@ private: System::Void addM(System::Object^ sender, System::Windows::Forms::Mouse
 }
 private: System::Void deleteM(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
 	this->viewController->addViewMode(ViewMode::DELETE_M);
+}
+private: System::Void alg(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+	this->viewController->addViewMode(ViewMode::ALG);
 }
 };
 }

@@ -4,10 +4,11 @@
 #include "FileService.h"
 #include "NodeModel.h"
 #include "LineModel.h"
+#include "PetriNet.h"
 
 
 enum ViewMode {
-	DELETE_NODE, ADD_POSITION, ADD_TRANSFER, ADD_LINE,ADD_M,DELETE_M, NONE
+	DELETE_NODE, ADD_POSITION, ADD_TRANSFER, ADD_LINE,ADD_M,DELETE_M,ALG, NONE
 };
 
 
@@ -22,11 +23,16 @@ private:
 
 	list<NodeModel*>* nodes = new list<NodeModel*>;
 	list<LineModel*>* lines = new list<LineModel*>;
+	alg::Allocator<short>* alloc = new alg::Allocator<short>();
+	alg::PetriNet<short int>* pNet = alloc->getNet();
 	ViewMode mode = ViewMode::NONE;
 	int selectId = -1;
 	void drawLine(LineModel* line, System::Drawing::Color col);
 	void drawLineTriangle(System::Drawing::Graphics^ g, System::Drawing::Pen^ pen, float x1, float y1, float x2, float y2);
 	void drawNode(NodeModel* node);
+
+	void mUpdate();
+	void fullUpdate();
 	
 	
 	System::Void clickNode(System::Object^ sender, System::EventArgs^ e) {

@@ -21,4 +21,5 @@ public:
 	void deleteNode(int id, list<NodeModel*>* nodes, list<LineModel*>* lines);
 	void refresh(list<NodeModel*>* nodes);
 	void incrNode(int id, list<NodeModel*>* nodes);
+	NodeModel* getNodeById(int id, list<NodeModel*>* nodes);
 };

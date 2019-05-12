@@ -1,6 +1,7 @@
 #pragma once
 #include "NodeModel.h"
 #include "LineModel.h"
+#include <unordered_map>
 #include <list>
 
 using namespace std;
@@ -9,7 +10,7 @@ class LineService
 {
 private:
 	LineService();
-	int maxId = 0;
+	int maxId = -1;
 public:
 	static LineService& getLineService();
 	list<LineModel*> getLineById(int id, list<LineModel*>* lines);
@@ -18,4 +19,5 @@ public:
 	void deleteLinesByNodeId(int id, list<LineModel*>* lines);
 	bool contains(LineModel* line, list<LineModel*>* lines);
 	void refresh(list<LineModel*>* lines);
+	list<LineModel*>* convert(vector<short> line, list<LineModel*>* lines);
 };

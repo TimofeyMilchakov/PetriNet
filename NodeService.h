@@ -14,7 +14,7 @@ private:
 	NodeService(const NodeService&);
 	bool check(int x, int y, NodeModel* node);
 	bool validateNode(NodeModel* node);
-	int maxId = 0;
+	int maxId = -1;
 	LineService& lineService = LineService::getLineService();
 public:
 	static NodeService& getNodeService();

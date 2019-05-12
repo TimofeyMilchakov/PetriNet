@@ -59,6 +59,7 @@ LineModel* LineService::createNewLine(int from, int to, list<NodeModel*>* nodes,
 	return new LineModel(++maxId, from, to);
 }
 
+
 void LineService::deleteLinesByNodeId(int id, list<LineModel*>* lines)
 {
 	list<LineModel*>::iterator it;
@@ -94,6 +95,19 @@ void LineService::refresh(list<LineModel*>* lines)
 		}
 	}
 	this->maxId = max;
+}
+
+list<LineModel*>* LineService::convert(vector<short> line, list<LineModel*>* lines)
+{
+	list<LineModel*>* res = new list<LineModel*>();
+	for (short id : line) {
+		for (LineModel* l : *lines) {
+			if (id == l->id) {
+				res->push_back(l);
+			}
+		}
+	}
+	return res->empty() ? nullptr : res;
 }
 
 

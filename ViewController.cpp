@@ -91,6 +91,12 @@ void ViewController::addNewNode(int x, int y)
 	}
 	mode = ViewMode::NONE;
 	if (node != nullptr) {
+		if (node->type == 1) {
+			pNet->addP(node->id);
+		}
+		else {
+			pNet->addT(node->id);
+		}
 		drawNode(node);
 		this->nodes->push_back(node);
 	}
@@ -103,6 +109,7 @@ void ViewController::nodeClick(int id)
 		{
 		case DELETE_NODE:
 			nodeService.deleteNode(id, nodes, lines);
+			fullUpdate();
 			this->mode=ViewMode::NONE;
 			clean(false);
 			draw(nullptr);
@@ -116,6 +123,13 @@ void ViewController::nodeClick(int id)
 			{
 				LineModel* line = lineService.createNewLine(this->selectId,id,nodes,lines);
 				if (line != nullptr) {
+					NodeModel* f = nodeService.getNodeById(line->firstNode, nodes);
+					if (f->type == 1) {
+						pNet->addD(line->firstNode, line->secondNode, 1);
+					}
+					else {
+						pNet->addD(line->secondNode, line->firstNode, -1);
+					}
 					drawLine(line,System::Drawing::Color::Black);
 					lines->push_back(line);
 				}
@@ -125,13 +139,32 @@ void ViewController::nodeClick(int id)
 			break;
 		case ADD_M:
 			nodeService.changeSizeNode(id, nodes,true);
+			pNet->addM(id, nodeService.getNodeById(id, nodes)->size);
 			clean(false);
 			draw(nullptr);
 			break;
 		case DELETE_M:
 			nodeService.changeSizeNode(id, nodes, false);
+			pNet->addM(id, nodeService.getNodeById(id, nodes)->size);
 			clean(false);
 			draw(nullptr);
+			break;
+
+		case ALG:
+			if (this->selectId == -1)
+			{
+				this->selectId = id;
+			}
+			else
+			{
+				vector<short> line = pNet->algorithm(this->selectId, id);
+				list<LineModel*>* redLines = lineService.convert(line, lines);
+				mUpdate();
+				clean(false);
+				draw(redLines);
+				this->selectId = -1;
+				this->mode = ViewMode::NONE;
+			}
 			break;
 		}
 	
@@ -145,8 +178,39 @@ void ViewController::clean(bool all)
 	if (all) {
 		nodes->clear();
 		lines->clear();
+		fullUpdate();
 	}
 
+}
+
+void ViewController::mUpdate() {
+	for (NodeModel* node : *nodes) {
+		if (node->type == 1) {
+			node->size = pNet->atM(node->id);
+		}
+	}
+}
+
+void ViewController::fullUpdate() {
+	pNet = alloc->getNet();
+	for (NodeModel* node : *nodes) {
+		if (node->type == 1) {
+			pNet->addP(node->id);
+			pNet->addM(node->id, node->size);
+		}
+		else {
+			pNet->addT(node->id);
+		}
+	}
+	for (LineModel* line : *lines) {
+		NodeModel* f = nodeService.getNodeById(line->firstNode, nodes);
+		if (f->type == 1) {
+			pNet->addD(line->firstNode, line->secondNode, 1);
+		}
+		else {
+			pNet->addD(line->secondNode, line->firstNode, -1);
+		}
+	}
 }
 
 void ViewController::draw(list<LineModel*>* redLines)
@@ -192,6 +256,7 @@ string ViewController::loadFile(string path)
 	if (fileService.loadFile(path, nodes, lines)) 
 	{
 		if (nodeService.validateData(nodes, lines)) {
+			fullUpdate();
 			clean(false);
 			draw(nullptr);
 			lineService.refresh(lines);

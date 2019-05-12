@@ -3,24 +3,48 @@
 void ViewController::drawLine(LineModel* line, System::Drawing::Color col)
 {
 	list<NodeModel*>::iterator it;
-	NodeModel* start;
-	NodeModel* end;
-	for (it = nodes->begin(); it != nodes->end(); it++) {
-		if ((*it)->id == line->firstNode) {
-			start = *it;
-		}
-		if ((*it)->id == line->secondNode) {
-			end = *it;
-		}
-	}
+	NodeModel* start = nodeService.getNodeById(line->firstNode, nodes);
+	NodeModel* end = nodeService.getNodeById(line->secondNode, nodes);
 	if (start == nullptr || end == nullptr) {
 		return;
 	}
 	System::Drawing::Graphics^ g = this->panel->CreateGraphics();
 	System::Drawing::Pen^ pen = gcnew System::Drawing::Pen(col, 2);
+	int delX = start->x < end->x ? 0 : 40;
+	int delY = start->y < end->y ? 0 : 40;
+	drawLineTriangle(g, pen, start->x+20, start->y + 20, end->x+delX, end->y+delY);
+}
+
+void ViewController::drawLineTriangle(System::Drawing::Graphics^ g, System::Drawing::Pen^ pen, float x1, float y1, float x2, float y2)
+{
 	pen->EndCap = System::Drawing::Drawing2D::LineCap::Triangle;
 	pen->StartCap = System::Drawing::Drawing2D::LineCap::Triangle;
-	g->DrawLine(pen, start->x, start->y, end->x, end->y);
+	
+	float x, y;
+	float f1x2, f1y2;
+	float lons, ugol;
+
+	const float ostr = 0.25;        // острота стрелки
+
+	g->DrawLine(pen, x1, y1, x2, y2);
+
+	x = x2 - x1;
+	y = y2 - y1;
+
+	lons = sqrt(x * x + y * y) / 7;     // длина лепестков % от длины стрелки
+	ugol = atan2(y, x);             // угол наклона линии
+
+	//lons = 12;
+
+	f1x2 = x2 - lons * cos(ugol - ostr);
+	f1y2 = y2 - lons * sin(ugol - ostr);
+
+	g->DrawLine(pen, x2, y2, f1x2, f1y2);
+
+	f1x2 = x2 - lons * cos(ugol + ostr);
+	f1y2 = y2 - lons * sin(ugol + ostr);
+
+	g->DrawLine(pen, x2, y2, f1x2, f1y2);
 }
 
 void ViewController::drawNode(NodeModel* node)

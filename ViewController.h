@@ -25,6 +25,7 @@ private:
 	ViewMode mode = ViewMode::NONE;
 	int selectId = -1;
 	void drawLine(LineModel* line, System::Drawing::Color col);
+	void drawLineTriangle(System::Drawing::Graphics^ g, System::Drawing::Pen^ pen, float x1, float y1, float x2, float y2);
 	void drawNode(NodeModel* node);
 	
 	

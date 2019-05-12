@@ -61,4 +61,15 @@ void NodeService::incrNode(int id,list<NodeModel*>* nodes)
 	}
 }
 
+NodeModel* NodeService::getNodeById(int id, list<NodeModel*>* nodes)
+{
+	list<NodeModel*>::iterator it;
+	for (it = nodes->begin(); it != nodes->end(); it++) {
+		if ((*it)->id == id) {
+			return (*it);
+		}
+	}
+	return nullptr;
+}
+
 

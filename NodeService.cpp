@@ -11,7 +11,7 @@ bool NodeService::check(int x, int y, NodeModel* node)
 
 bool NodeService::validateNode(NodeModel* node)
 {
-	return node!=nullptr && node->id > 0 && node->x > 0 && node->y > 0 && (node->type == 1 || node->type == 2) && node->size >= 0;
+	return node!=nullptr && node->id >= 0 && node->x > 0 && node->y > 0 && (node->type == 1 || node->type == 2) && node->size >= 0;
 }
 
 NodeService& NodeService::getNodeService()

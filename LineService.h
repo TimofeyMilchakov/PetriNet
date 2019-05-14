@@ -19,5 +19,5 @@ public:
 	void deleteLinesByNodeId(int id, list<LineModel*>* lines);
 	bool contains(LineModel* line, list<LineModel*>* lines);
 	void refresh(list<LineModel*>* lines);
-	list<LineModel*>* convert(vector<short> line, list<LineModel*>* lines);
+	list<LineModel*>* convert(int start,vector<short> line,int end, list<LineModel*>* lines);
 };

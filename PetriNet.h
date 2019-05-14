@@ -172,7 +172,7 @@ namespace alg {
 	bool PetriNet<V>::transPossibility(V p1, V p2) //возможность перехода
 	{
 		V T = findT(p1, p2);
-		if (T > -1 && M[p1] > 0) {
+		if ((p1 != p2) && T > -1 && M[p1] > 0) {
 			return true;
 		}
 		return false;
@@ -180,9 +180,10 @@ namespace alg {
 	template<typename V>
 	V PetriNet<V>::findT(V p1, V p2) //ищем переход
 	{
-		for (auto t : net[p1])
-			if (net[p2].at(t.first) > 0)
+		for (auto t : net[p1]) {
+			if ((p1 != p2) && (net[p2].at(t.first) > 0))
 				return t.first;
+		}
 		return -1;
 
 	}
@@ -236,12 +237,17 @@ namespace alg {
 				p1 = p2;
 				p = -1;
 			}
-			else if (pBegin != pEnd)
-			{
-				p = p1;
+			else if(p1!=p)
+		{
+			p = p1;
+			if (T.empty() && P.empty()) {
+				continue;
+			}
+			else {
 				T.pop_back(); P.pop_back();
 				p1 = P[P.size() - 1];
-			}
+			    }
+		    }
 		}
 		return {};  //пустой вектор
 	}
@@ -269,8 +275,8 @@ namespace alg {
 			{
 				V p = itP.getPos();
 				net[p][t] = 0;
-				sizeT++;
 			}
+		if (t > 0) sizeT++;
 	}
 
 	template<typename V>

@@ -205,10 +205,10 @@ void ViewController::fullUpdate() {
 	for (LineModel* line : *lines) {
 		NodeModel* f = nodeService.getNodeById(line->firstNode, nodes);
 		if (f->type == 1) {
-			pNet->addD(line->firstNode, line->secondNode, 1);
+			pNet->addD(line->firstNode, line->secondNode, -1);
 		}
 		else {
-			pNet->addD(line->secondNode, line->firstNode, -1);
+			pNet->addD(line->secondNode, line->firstNode, 1);
 		}
 	}
 }

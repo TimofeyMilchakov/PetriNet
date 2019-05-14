@@ -125,10 +125,10 @@ void ViewController::nodeClick(int id)
 				if (line != nullptr) {
 					NodeModel* f = nodeService.getNodeById(line->firstNode, nodes);
 					if (f->type == 1) {
-						pNet->addD(line->firstNode, line->secondNode, 1);
+						pNet->addD(line->firstNode, line->secondNode, -1);
 					}
 					else {
-						pNet->addD(line->secondNode, line->firstNode, -1);
+						pNet->addD(line->secondNode, line->firstNode, 1);
 					}
 					drawLine(line,System::Drawing::Color::Black);
 					lines->push_back(line);
@@ -158,7 +158,7 @@ void ViewController::nodeClick(int id)
 			else
 			{
 				vector<short> line = pNet->algorithm(this->selectId, id);
-				list<LineModel*>* redLines = lineService.convert(line, lines);
+				list<LineModel*>* redLines = lineService.convert(this->selectId,line,id, lines);
 				mUpdate();
 				clean(false);
 				draw(redLines);
@@ -205,10 +205,10 @@ void ViewController::fullUpdate() {
 	for (LineModel* line : *lines) {
 		NodeModel* f = nodeService.getNodeById(line->firstNode, nodes);
 		if (f->type == 1) {
-			pNet->addD(line->firstNode, line->secondNode, 1);
+			pNet->addD(line->firstNode, line->secondNode, -1);
 		}
 		else {
-			pNet->addD(line->secondNode, line->firstNode, -1);
+			pNet->addD(line->secondNode, line->firstNode, 1);
 		}
 	}
 }

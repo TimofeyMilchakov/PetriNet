@@ -97,14 +97,29 @@ void LineService::refresh(list<LineModel*>* lines)
 	this->maxId = max;
 }
 
-list<LineModel*>* LineService::convert(vector<short> line, list<LineModel*>* lines)
+list<LineModel*>* LineService::convert(int start, vector<short> line, int end, list<LineModel*>* lines)
 {
 	list<LineModel*>* res = new list<LineModel*>();
+	int oldStart = start;
 	for (short id : line) {
 		for (LineModel* l : *lines) {
-			if (id == l->id) {
+			if (start == l->firstNode&&id== l->secondNode) {
 				res->push_back(l);
+				start = id;
+				break;
 			}
+		}
+		if (start == oldStart) {
+			return nullptr;
+		}
+		else {
+			oldStart = start;
+		}
+	}
+	for (LineModel* l : *lines) {
+		if (start == l->firstNode && end == l->secondNode) {
+			res->push_back(l);
+			break;
 		}
 	}
 	return res->empty() ? nullptr : res;

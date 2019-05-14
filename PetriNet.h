@@ -2,13 +2,13 @@
 #include <iostream>
 #include <unordered_map>
 using namespace std;
-
+namespace alg {
 template<typename V>
 class PetriNet
 {
 	
-	unordered_map<V, unordered_map<V, short>> net; //PxT матрица со значениями -1,0,1
-	unordered_map<V, short> M; //матрица маркеров
+	unordered_map<V, unordered_map<V, short>> net; //PxT Ð¼Ð°ÑÑÐ¸ÑÐ° ÑÐ¾ Ð·Ð½Ð°ÑÐµÐ½Ð¸ÑÐ¼Ð¸ -1,0,1
+	unordered_map<V, short> M; //Ð¼Ð°ÑÑÐ¸ÑÐ° Ð¼Ð°ÑÐºÐµÑÐ¾Ð²
 	size_t sizeP, sizeT; 
 	
 
@@ -16,7 +16,7 @@ public:
 	class Iterator: std::iterator<std::input_iterator_tag, V>
 	{
 	public:
-		Iterator(V pos, size_t count, unordered_map<V, short> map); //позиция, количество
+		Iterator(V pos, size_t count, unordered_map<V, short> map); //Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ, ÐºÐ¾Ð»Ð¸ÑÐµÑÑÐ²Ð¾
 		Iterator(const Iterator& it);
 		Iterator& operator ++ ();
 		typename Iterator& operator *() const;
@@ -108,9 +108,9 @@ public:
 	Allocator() {}
 	virtual ~Allocator();
 
-	PetriNet<V>* getNet(); //получить
+	PetriNet<V>* getNet(); //Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ
 
-	void returnNet(PetriNet<V>* net); //вынуть
+	void returnNet(PetriNet<V>* net); //Ð²ÑÐ½ÑÑÑ
 
 	void returnAll();
 
@@ -140,7 +140,7 @@ void Allocator<V>::returnNet(PetriNet<V>* net)
 
 	if (pos == _pool.end())
 	{
-		//THROW_ALLOCATOR_EXCEPTION("can't find returned value in pool!"); - добавить
+		//THROW_ALLOCATOR_EXCEPTION("can't find returned value in pool!"); - Ð´Ð¾Ð±Ð°Ð²Ð¸ÑÑ
 		return;
 	}
 
@@ -175,7 +175,7 @@ PetriNet<V>::~PetriNet()
 //		if(net[p][t] !=0)
 //}
 template<typename V>
-bool PetriNet<V>::transPossibility(V p1, V p2) //возможность перехода
+bool PetriNet<V>::transPossibility(V p1, V p2) //Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑÑ Ð¿ÐµÑÐµÑÐ¾Ð´Ð°
 {
 	V T = findT(p1, p2);
 	if (T > -1 && M[p1] > 0) {
@@ -184,7 +184,7 @@ bool PetriNet<V>::transPossibility(V p1, V p2) //возможность пере
 	return false;
 }
 template<typename V>
-V PetriNet<V>::findT(V p1, V p2) //ищем переход
+V PetriNet<V>::findT(V p1, V p2) //Ð¸ÑÐµÐ¼ Ð¿ÐµÑÐµÑÐ¾Ð´
 {
 	for (auto t : net[p1]) {
 		if (net[p2].at(t.first) > 0)
@@ -194,11 +194,11 @@ V PetriNet<V>::findT(V p1, V p2) //ищем переход
 
 }
 template<typename V>
-void PetriNet<V>::jump(V T) //используем переход
+void PetriNet<V>::jump(V T) //Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼ Ð¿ÐµÑÐµÑÐ¾Ð´
 {
 	bool marker = false; V p;
 	for (Iterator itP = beginP(); itP != endP(); ++itP)
-	{  //доступные позиции
+	{  //Ð´Ð¾ÑÑÑÐ¿Ð½ÑÐµ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸
 		p=itP.getPos();
 		if (net.find(p) == net.end()) continue;
 		if (net[p][T] < 0 && M[p]>0)
@@ -219,7 +219,7 @@ void PetriNet<V>::jump(V T) //используем переход
 }
 
 template<typename V>
-vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
+vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //Ð¿ÑÑÑ Ð¸Ð· p1 Ð² p2
 {
 	vector<V>  T, P;
 	V p1 = pBegin, p2, p;
@@ -232,17 +232,17 @@ vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 		b = transPossibility(p1, p2);
 		if (p2 == pEnd && b)
 		{
-			T.push_back(findT(p1, p2)); //по какому t
+			T.push_back(findT(p1, p2)); //Ð¿Ð¾ ÐºÐ°ÐºÐ¾Ð¼Ñ t
 			for (int i = 0; i < T.size(); i++)
 			{
 				jump(T[i]);
 			}
-			return T; //по ним делаем jump
+			return T; //Ð¿Ð¾ Ð½Ð¸Ð¼ Ð´ÐµÐ»Ð°ÐµÐ¼ jump
 		}
 		if (b)
 		{
 			T.push_back(findT(p1, p2));
-			P.push_back(p1); //откуда
+			P.push_back(p1); //Ð¾ÑÐºÑÐ´Ð°
 			p1 = p2;
 			p = -1;
 		}
@@ -258,7 +258,7 @@ vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 			}
 		}
 	}
-	return {};  //пустой вектор
+	return {};  //Ð¿ÑÑÑÐ¾Ð¹ Ð²ÐµÐºÑÐ¾Ñ
 }
 template<typename V>
 void PetriNet<V>::addP(V p)
@@ -335,4 +335,5 @@ V PetriNet<V>::atM(V p)
 {
 	if (M.find(p) != M.end())
 	   return M[p];
+}
 }

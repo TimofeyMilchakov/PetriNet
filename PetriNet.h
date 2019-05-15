@@ -2,7 +2,6 @@
 #include <iostream>
 #include <unordered_map>
 using namespace std;
-
 namespace alg {
 	template<typename V>
 	class PetriNet
@@ -17,7 +16,7 @@ namespace alg {
 		class Iterator : std::iterator<std::input_iterator_tag, V>
 		{
 		public:
-			Iterator(V pos, size_t count); //позиция, количество
+			Iterator(V pos, size_t count, unordered_map<V, short> map); //позиция, количество
 			Iterator(const Iterator& it);
 			Iterator& operator ++ ();
 			typename Iterator& operator *() const;
@@ -27,11 +26,12 @@ namespace alg {
 		private:
 			size_t _count;
 			V _pos;
+			vector<V> _keys;
 		};
-		Iterator beginP() { return Iterator(0, sizeP); }
-		Iterator endP() { return Iterator(sizeP, sizeP); }
-		Iterator beginT() { return Iterator(0, sizeT); }
-		Iterator endT() { return Iterator(sizeT, sizeT); }
+		Iterator beginP() { return Iterator(0, sizeP, M); }
+		Iterator endP() { return Iterator(sizeP, sizeP, M); }
+		Iterator beginT() { return Iterator(0, sizeT, net[0]); }
+		Iterator endT() { return Iterator(sizeT, sizeT, net[0]); }
 
 		PetriNet();
 		virtual ~PetriNet();
@@ -46,14 +46,20 @@ namespace alg {
 		void addT(V t);
 		V atD(V p, V t);
 		V atM(V p);
+		void deleteP(V p);
+		void deleteT(V p);
 	};
 
 
 	template<typename V>
-	PetriNet<V>::Iterator::Iterator(V pos, size_t count)
+	PetriNet<V>::Iterator::Iterator(V pos, size_t count, unordered_map<V, short> map)
 	{
 		_pos = pos;
 		_count = count;
+		_keys.reserve(map.size());
+		for (auto kv : map) {
+			_keys.push_back(kv.first);
+		}
 	}
 	template<typename V>
 	PetriNet<V>::Iterator::Iterator(const Iterator& it)
@@ -171,17 +177,20 @@ namespace alg {
 	template<typename V>
 	bool PetriNet<V>::transPossibility(V p1, V p2) //возможность перехода
 	{
+		bool b;
 		V T = findT(p1, p2);
-		if ((p1 != p2) && T > -1 && M[p1] > 0) {
-			return true;
+		if (T > -1 ) {
+			b= true;
 		}
-		return false;
+		else
+			b = false;
+		return b;
 	}
 	template<typename V>
 	V PetriNet<V>::findT(V p1, V p2) //ищем переход
 	{
 		for (auto t : net[p1]) {
-			if ((p1 != p2) && (net[p2].at(t.first) > 0))
+			if (net[p2].at(t.first) > 0)
 				return t.first;
 		}
 		return -1;
@@ -190,10 +199,11 @@ namespace alg {
 	template<typename V>
 	void PetriNet<V>::jump(V T) //используем переход
 	{
-		bool marker = false;
+		bool marker = false; V p;
 		for (Iterator itP = beginP(); itP != endP(); ++itP)
 		{  //доступные позиции
-			V p = itP.getPos();
+			p = itP.getPos();
+			if (net.find(p) == net.end()) continue;
 			if (net[p][T] < 0 && M[p]>0)
 			{
 				M[p]--; marker = true;
@@ -202,7 +212,8 @@ namespace alg {
 		if (marker)
 			for (Iterator itP = beginP(); itP != endP(); ++itP)
 			{
-				V p = itP.getPos();
+				p = itP.getPos();
+				if (net.find(p) == net.end()) continue;
 				if (net[p][T] > 0)
 				{
 					M[p]++;
@@ -219,16 +230,19 @@ namespace alg {
 		for (Iterator itP = beginP(); itP != endP(); ++itP)
 		{
 			p = itP.getPos();
+			if (net.find(p) == net.end()) continue;
 			p2 = p;
 			b = transPossibility(p1, p2);
 			if (p2 == pEnd && b)
 			{
 				T.push_back(findT(p1, p2)); //по какому t
+				P.push_back(p1);
 				for (int i = 0; i < T.size(); i++)
 				{
 					jump(T[i]);
 				}
-				return T; //по ним делаем jump
+				P.insert(P.end(), T.begin(), T.end()); //сначала P, потом T
+				return P; 
 			}
 			if (b)
 			{
@@ -236,18 +250,21 @@ namespace alg {
 				P.push_back(p1); //откуда
 				p1 = p2;
 				p = -1;
+				b = false;
 			}
-			else if(p1!=p)
-		{
-			p = p1;
-			if (T.empty() && P.empty()) {
-				continue;
+			else 
+			{
+				if (p1 != p) {
+					p = p1;
+					if (T.empty() && P.empty()) {
+						continue;
+					}
+					else {
+						T.pop_back(); P.pop_back();
+						p1 = P[P.size() - 1];
+					}
+				}
 			}
-			else {
-				T.pop_back(); P.pop_back();
-				p1 = P[P.size() - 1];
-			    }
-		    }
 		}
 		return {};  //пустой вектор
 	}
@@ -280,13 +297,33 @@ namespace alg {
 	}
 
 	template<typename V>
-	void PetriNet<V>::addD(V p, V t, V d)
+	void PetriNet<V>::deleteP(V p)
 	{
 		const int P = p;
+		net.erase(p);
+		M.erase(p);
+	}
+	template<typename V>
+	void PetriNet<V>::deleteT(V t)
+	{
 		const int T = t;
-		if (M.count(P) > 0)
-			if (net[0].count(T) > 0)
-				net[p][t] = d;
+		for (Iterator itP = beginP(); itP != endP(); ++itP)
+		{
+			net[itP.getPos()].erase(t);
+		}
+	}
+
+
+	template<typename V>
+	void PetriNet<V>::addD(V p, V t, V d)
+	{
+		if ((net.find(p) != net.end()) && (net[p].find(t) != net[p].end())) {
+			const int P = p;
+			const int T = t;
+			if (M.count(P) > 0)
+				if (net[0].count(T) > 0)
+					net[p][t] = d;
+		}
 	}
 	template<typename V>
 	void PetriNet<V>::addM(V p, V val)
@@ -297,11 +334,14 @@ namespace alg {
 	template<typename V>
 	V PetriNet<V>::atD(V p, V t)
 	{
-		return net[p][t];
+		if ((net.find(p) != net.end()) && (net[p].find(t) != net[p].end()))
+			return net[p][t];
+		else return 0;
 	}
 	template<typename V>
 	V PetriNet<V>::atM(V p)
 	{
-		return M[p];
+		if (M.find(p) != M.end())
+			return M[p];
 	}
 }

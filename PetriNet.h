@@ -190,7 +190,7 @@ namespace alg {
 	V PetriNet<V>::findT(V p1, V p2) //ищем переход
 	{
 		for (auto t : net[p1]) {
-			if (net[p2].at(t.first) > 0)
+			if (net[p2].at(t.first) > 0 && net[p1].at(t.first)<1)
 				return t.first;
 		}
 		return -1;

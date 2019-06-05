@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <unordered_map>
+#include <algorithm> 
 using namespace std;
 namespace alg {
 	template<typename V>
@@ -16,11 +17,12 @@ namespace alg {
 		class Iterator : std::iterator<std::input_iterator_tag, V>
 		{
 		public:
-			Iterator(V pos, size_t count, unordered_map<V, short> map); //позиция, количество
+			Iterator(V pos, unordered_map<V, short> map); //позиция, количество
 			Iterator(const Iterator& it);
 			Iterator& operator ++ ();
 			typename Iterator& operator *() const;
 			V getPos();
+			short _i;
 			bool operator!=(Iterator const& other) const;
 
 		private:
@@ -28,10 +30,10 @@ namespace alg {
 			V _pos;
 			vector<V> _keys;
 		};
-		Iterator beginP() { return Iterator(0, sizeP, M); }
-		Iterator endP() { return Iterator(sizeP, sizeP, M); }
-		Iterator beginT() { return Iterator(0, sizeT, net[0]); }
-		Iterator endT() { return Iterator(sizeT, sizeT, net[0]); }
+		Iterator beginP() { return Iterator(0, M); }
+		Iterator endP() { return Iterator(sizeP, M); }
+		Iterator beginT() { return Iterator(0, net[0]); }
+		Iterator endT() { return Iterator(sizeT, net[0]); }
 
 		PetriNet();
 		virtual ~PetriNet();
@@ -52,14 +54,21 @@ namespace alg {
 
 
 	template<typename V>
-	PetriNet<V>::Iterator::Iterator(V pos, size_t count, unordered_map<V, short> map)
+	PetriNet<V>::Iterator::Iterator(V pos, unordered_map<V, short> map)
 	{
 		_pos = pos;
-		_count = count;
 		_keys.reserve(map.size());
 		for (auto kv : map) {
 			_keys.push_back(kv.first);
 		}
+		sort(_keys.begin(), _keys.end());
+		_i = 0;
+		_pos = _keys[_i];
+		if (pos > _i) {
+			_i = pos;
+			_pos = _keys[_keys.size() - 1];
+		}
+		_count = _keys.size();
 	}
 	template<typename V>
 	PetriNet<V>::Iterator::Iterator(const Iterator& it)
@@ -69,19 +78,21 @@ namespace alg {
 	template<typename V>
 	typename PetriNet<V>::Iterator& PetriNet<V>::Iterator::operator ++()
 	{
-		if (_pos >= _count)
+		if (_i >= _count-1)
 		{
 			//THROW_MG_NULL_POINTER_EXCEPTION("Null pointer exception, increment > size!");
+			++_i;
 			return *this;
 		}
-		++_pos;
+		++_i;
+		_pos=_keys[_i];
 		return *this;
 	}
 
 	template<typename V>
 	typename PetriNet<V>::Iterator& PetriNet<V>::Iterator::operator *() const
 	{
-		if (_pos == _count)
+		if (_i == _count)
 		{
 			//THROW_MG_NULL_POINTER_EXCEPTION("Null pointer exception, Try access to last NULL element!");
 			return NULL;
@@ -91,7 +102,7 @@ namespace alg {
 	template<typename V>
 	bool PetriNet<V>::Iterator::operator!=(Iterator const& other) const
 	{
-		return _pos != other._pos;
+		return _i != other._i;
 	}
 	template<typename V>
 	V PetriNet<V>::Iterator::getPos()
@@ -189,9 +200,11 @@ namespace alg {
 	template<typename V>
 	V PetriNet<V>::findT(V p1, V p2) //ищем переход
 	{
-		for (auto t : net[p1]) {
-			if (net[p2].at(t.first) > 0 && net[p1].at(t.first)<1)
-				return t.first;
+		Iterator itT = beginT();
+		while( itT != endT() ) {
+			if (net[p2][itT.getPos()] > 0 && net[p1][itT.getPos()]<1)
+				return itT.getPos();
+			++itT;
 		}
 		return -1;
 
@@ -224,9 +237,10 @@ namespace alg {
 	template<typename V>
 	vector<V> PetriNet<V>::algorithm(V pBegin, V pEnd) //путь из p1 в p2
 	{
-		vector<V>  T, P;
+		vector<V>  T, P, res;
 		V p1 = pBegin, p2, p;
 		bool b = false;
+		if (M[pBegin] == 0) return {};
 		for (Iterator itP = beginP(); itP != endP(); ++itP)
 		{
 			p = itP.getPos();
@@ -241,8 +255,21 @@ namespace alg {
 				{
 					jump(T[i]);
 				}
-				P.insert(P.end(), T.begin(), T.end()); //сначала P, потом T
-				return P; 
+				int N = P.size() + T.size();
+				for (int i = 0; i < N; i++)
+				{
+					if (i%2 == 0) {
+						res.push_back(P[0]);
+						P.erase(P.begin());
+					}
+					else
+					{
+						res.push_back(T[0]);
+						T.erase(T.begin());
+					}
+				}
+				res.push_back(pEnd);
+				return res; 
 			}
 			if (b)
 			{
@@ -255,8 +282,11 @@ namespace alg {
 			else 
 			{
 				if (p1 != p) {
-					p = p1;
-					if (T.empty() && P.empty()) {
+					bool k=true;
+					for (Iterator itT = beginT(); itT != endT(); ++itT)
+						if (net[p1][itT.getPos()] != net[p2][itT.getPos()])
+							k = false;
+					if (T.empty() && P.empty() || k) {
 						continue;
 					}
 					else {
@@ -274,6 +304,7 @@ namespace alg {
 		const int P = p;
 		if (M.count(P) == 0)
 		{
+			
 			M[p] = 0;
 			for (Iterator itT = beginT(); itT != endT(); ++itT)
 			{

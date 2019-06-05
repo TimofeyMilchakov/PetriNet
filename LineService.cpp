@@ -102,6 +102,9 @@ list<LineModel*>* LineService::convert(int start, vector<short> line, int end, l
 	list<LineModel*>* res = new list<LineModel*>();
 	int oldStart = start;
 	for (short id : line) {
+		if (start == id) {
+			continue;
+		}
 		for (LineModel* l : *lines) {
 			if (start == l->firstNode&&id== l->secondNode) {
 				res->push_back(l);

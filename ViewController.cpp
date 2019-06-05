@@ -157,11 +157,19 @@ void ViewController::nodeClick(int id)
 			}
 			else
 			{
-				vector<short> line = pNet->algorithm(this->selectId, id);
-				list<LineModel*>* redLines = lineService.convert(this->selectId,line,id, lines);
-				mUpdate();
-				clean(false);
-				draw(redLines);
+				try {
+					vector<short> line = pNet->algorithm(this->selectId, id);
+					list<LineModel*>* redLines = lineService.convert(this->selectId, line, id, lines);
+					mUpdate();
+					clean(false);
+					draw(redLines);
+				}
+				catch (exception e) {
+					std::cout << "\n error";
+					System::Windows::Forms::MessageBox::Show(gcnew System::String("Во время работы алгоритма произошла ошибка, мы уже пытаемся ее исправить"));
+					fullUpdate();
+				}
+
 				this->selectId = -1;
 				this->mode = ViewMode::NONE;
 			}
